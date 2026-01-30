@@ -11,4 +11,12 @@ export class UsersRepository {
       data: createUsersDto,
     });
   }
+
+  async findByUsername(username: string) {
+    return this.prismaService.user.findUnique({
+      where: {
+        username,
+      },
+    });
+  }
 }
