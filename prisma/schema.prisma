@@ -29,10 +29,11 @@ model User {
 }
 
 model Message {
-  id      String  @id @default(cuid())
-  content String
-  name    String?
-  isOpen  Int     @default(0) // 1 for open = true
+  id       String  @id @default(cuid())
+  content  String
+  name     String?
+  senderIp String
+  isOpen   Int     @default(0) // 1 for open = true
 
   userId String
   user   User   @relation(fields: [userId], references: [id])

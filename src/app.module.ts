@@ -4,6 +4,8 @@ import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from 'src/infrastructure/database/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { LoggerMiddleware } from 'src/common/middlewares/logger.middleware';
+import { MessagesModule } from './modules/messages/messages.module';
+import { MessagesModule } from './modules/messages/messages.module';
 
 @Module({
   imports: [
@@ -12,6 +14,7 @@ import { LoggerMiddleware } from 'src/common/middlewares/logger.middleware';
     }),
     PrismaModule,
     AuthModule,
+    MessagesModule,
   ],
   controllers: [AppController],
 })

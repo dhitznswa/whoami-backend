@@ -9,6 +9,7 @@ import { RegisterUserDto } from 'src/modules/auth/dto/register-user.dto';
 import { UsersService } from 'src/modules/users/users.service';
 import bcryptjs from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
+import { JwtPayloadInterface } from 'src/modules/auth/interface/jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -39,7 +40,7 @@ export class AuthService {
       const passwordCheck = await bcryptjs.compare(password, user.password);
       if (!passwordCheck) throw new UnauthorizedException();
 
-      const payload = {
+      const payload: JwtPayloadInterface = {
         sub: user.id,
         name: user.name,
         username: user.username,
