@@ -12,7 +12,7 @@ import { jwtConstants } from 'src/modules/auth/constants';
       global: true,
       secret: jwtConstants.secret,
       signOptions: {
-        expiresIn: '60s',
+        expiresIn: '3d',
       },
     }),
   ],

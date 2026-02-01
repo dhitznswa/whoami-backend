@@ -88,7 +88,6 @@ export const MessageScalarFieldEnum = {
   content: 'content',
   name: 'name',
   senderIp: 'senderIp',
-  isOpen: 'isOpen',
   userId: 'userId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

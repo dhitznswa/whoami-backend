@@ -30,7 +30,7 @@ export class AuthGuard implements CanActivate {
     const accessToken = req.cookies?.accessToken as string;
 
     if (!accessToken)
-      throw new UnauthorizedException("Token doesn't exist in cookie");
+      throw new UnauthorizedException(["Token doesn't exist in cookie"]);
 
     try {
       const isValidUser =
@@ -40,7 +40,7 @@ export class AuthGuard implements CanActivate {
 
       return true;
     } catch (_err) {
-      throw new UnauthorizedException('Access denied, token is not valid');
+      throw new UnauthorizedException(['Access denied, token is not valid']);
     }
   }
 }
