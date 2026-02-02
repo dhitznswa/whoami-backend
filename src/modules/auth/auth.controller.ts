@@ -7,6 +7,7 @@ import {
   Post,
   Req,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -75,6 +76,7 @@ export class AuthController {
   }
 
   @Post('/logout')
+  @HttpCode(HttpStatus.OK)
   logoutUser(@Res() res: Response) {
     res.clearCookie('accessToken', {
       httpOnly: true,
@@ -86,5 +88,18 @@ export class AuthController {
       statusCode: 200,
       message: 'Logout successfully',
     });
+  }
+
+  @Post('/session')
+  @HttpCode(HttpStatus.OK)
+  getCurrentUser(@Req() req: Request) {
+    if (!req.user)
+      throw new UnauthorizedException(['Access denied, token is invalid']);
+
+    return {
+      statusCode: 200,
+      message: 'Current user',
+      data: req.user,
+    };
   }
 }
