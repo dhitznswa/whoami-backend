@@ -12,6 +12,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import type { Request } from 'express';
 import { PublicAccess } from 'src/common/decorators/public-access.decorator';
 import { AuthGuard } from 'src/common/guards/auth.guard';
@@ -25,6 +26,7 @@ export class MessagesController {
 
   @Post(':username')
   @PublicAccess()
+  @Throttle({ default: { ttl: 60000, limit: 3 } })
   @HttpCode(HttpStatus.CREATED)
   async createMessage(
     @Body() createMessageDto: CreateMessageDto,
@@ -71,6 +73,22 @@ export class MessagesController {
       statusCode: 200,
       message: 'Message has been deleted',
       data: deletedMessage,
+    };
+  }
+
+  @Delete('/clear-all')
+  @HttpCode(HttpStatus.OK)
+  async deleteAllMessages(@Req() req: Request) {
+    const userId = req.user?.sub;
+    if (!userId)
+      throw new ForbiddenException(['Access denied, unauthorization']);
+
+    const deletedMessages = await this.messagesService.deleteAllMessage(userId);
+
+    return {
+      statusCode: 200,
+      message: 'All messages has been deleted',
+      data: deletedMessages,
     };
   }
 }

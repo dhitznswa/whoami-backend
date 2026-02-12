@@ -11,6 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { SkipThrottle } from '@nestjs/throttler';
 import type { Request, Response } from 'express';
 import { PublicAccess } from 'src/common/decorators/public-access.decorator';
 import { AuthGuard } from 'src/common/guards/auth.guard';
@@ -63,7 +64,7 @@ export class AuthController {
     res.cookie('accessToken', access_token, {
       httpOnly: true,
       secure: this.configService.get('NODE_ENV') === 'production',
-      sameSite: 'none',
+      sameSite: 'lax',
       maxAge: 3 * 24 * 60 * 60 * 1000,
       path: '/',
     });
@@ -81,7 +82,7 @@ export class AuthController {
     res.clearCookie('accessToken', {
       httpOnly: true,
       secure: this.configService.get('NODE_ENV') === 'production',
-      sameSite: 'none',
+      sameSite: 'lax',
     });
 
     return res.status(200).json({
@@ -91,6 +92,7 @@ export class AuthController {
   }
 
   @Post('/session')
+  @SkipThrottle()
   @HttpCode(HttpStatus.OK)
   getCurrentUser(@Req() req: Request) {
     if (!req.user)

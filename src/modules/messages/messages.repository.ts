@@ -48,11 +48,18 @@ export class MessagesRepository {
   }
 
   async findByUsername(username: string) {
+    const existingUser = await this.usersService.findUserByUsername(username);
+    if (!existingUser)
+      throw new NotFoundException(["Username doesn't exist in the database"]);
+
     const messages = await this.prismaService.message.findMany({
       where: {
         user: {
           username,
         },
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
     });
 
@@ -61,6 +68,14 @@ export class MessagesRepository {
 
   async delete(id: string) {
     const message = this.prismaService.message.delete({ where: { id } });
+
+    return message;
+  }
+
+  async deleteAll(userId: string) {
+    const message = this.prismaService.message.deleteMany({
+      where: { userId },
+    });
 
     return message;
   }
