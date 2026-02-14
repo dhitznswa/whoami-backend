@@ -56,7 +56,23 @@ export class MessagesController {
     };
   }
 
-  @Delete(':id')
+  @Delete('clear-all')
+  @HttpCode(HttpStatus.OK)
+  async deleteAllMessages(@Req() req: Request) {
+    const userId = req.user?.sub;
+    if (!userId)
+      throw new ForbiddenException(['Access denied, unauthorization']);
+
+    const deletedMessages = await this.messagesService.deleteAllMessage(userId);
+
+    return {
+      statusCode: 200,
+      message: 'All messages has been deleted',
+      data: deletedMessages,
+    };
+  }
+
+  @Delete('/:id/delete')
   @HttpCode(HttpStatus.OK)
   async deleteMessage(@Param('id') messageId: string, @Req() req: Request) {
     const userId = req.user?.sub;
@@ -73,22 +89,6 @@ export class MessagesController {
       statusCode: 200,
       message: 'Message has been deleted',
       data: deletedMessage,
-    };
-  }
-
-  @Delete('/clear-all')
-  @HttpCode(HttpStatus.OK)
-  async deleteAllMessages(@Req() req: Request) {
-    const userId = req.user?.sub;
-    if (!userId)
-      throw new ForbiddenException(['Access denied, unauthorization']);
-
-    const deletedMessages = await this.messagesService.deleteAllMessage(userId);
-
-    return {
-      statusCode: 200,
-      message: 'All messages has been deleted',
-      data: deletedMessages,
     };
   }
 }
